@@ -1,0 +1,55 @@
+version: '3.5'
+
+services:
+  db:
+    build: .docker/postgres
+    container_name: poc-db
+    restart: unless-stopped
+    tty: true
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=rtm
+      - POSTGRES_DB=rtm-poc
+    ports:
+      - 6501:5432
+    volumes:
+      - .docker/postgres/dbdata:/var/lib/postgresql/data
+    networks:
+      - rtm
+
+  app:
+    build: .docker/app
+    # entrypoint: dockerize -wait tcp://db:6501 -timeout 110s .docker/app/entrypoint.sh
+    entrypoint: .docker/app/entrypoint.sh
+    container_name: poc-app
+    tty: true
+    # environment:
+    #   - NODE_ENV=dev.env
+    ports:
+      - 6500:3000
+    volumes:
+      - .:/home/node/app
+    depends_on:
+      - db
+    networks:
+      - rtm
+    extra_hosts:
+      - "host.docker.internal:172.17.0.1" 
+
+  # pgadmin:
+  #   image: dpage/pgadmin4
+  #   container_name: db-adm
+  #   tty: true
+  #   environment:
+  #     - PGADMIN_DEFAULT_EMAIL=admin@user.com
+  #     - PGADMIN_DEFAULT_PASSWORD=123456
+  #   ports:
+  #     - 6502:80
+  #   depends_on:
+  #     - db
+  #   networks:
+  #     - rtm
+
+networks:
+  rtm:
+    driver: bridge

@@ -1,0 +1,10 @@
+{
+  "type": "postgres",
+  "host": "db",
+  "port": 6501,
+  "username": "postgres",
+  "password": "rtm",
+  "database": "rtm-poc",
+  "entities": ["dist/**/*.entity{.ts,.js}"],
+  "synchronize": true
+}
