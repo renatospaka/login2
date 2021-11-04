@@ -22,9 +22,8 @@ services:
     # entrypoint: dockerize -wait tcp://db:6501 -timeout 110s .docker/app/entrypoint.sh
     entrypoint: .docker/app/entrypoint.sh
     container_name: poc-app
+    restart: unless-stopped
     tty: true
-    # environment:
-    #   - NODE_ENV=dev.env
     ports:
       - 6500:3000
     volumes:
